@@ -13,6 +13,7 @@ namespace MyShop.DataAccess.InMemory
         ObjectCache cache = MemoryCache.Default;
         List<Product> products;
 
+        //constructor
         public ProductRepository()
         {
             products = cache["products"] as List<Product>;
@@ -36,13 +37,13 @@ namespace MyShop.DataAccess.InMemory
         {
             Product productToUpdate = products.Find(p => p.Id == product.Id);
 
-            if(productToUpdate == null)
+            if(productToUpdate != null)
             {
                 productToUpdate = product;
             }
             else
             {
-                throw new Exception("Product NoT Found");
+                throw new Exception("Product Not Found");
             }
         }
 
