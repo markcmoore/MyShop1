@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="models\BaseEntity.cs" />
     <Compile Include="models\Product.cs" />
     <Compile Include="models\ProductCategory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
