@@ -52,6 +52,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataContext.cs" />
+    <Compile Include="Migrations\201912171633003_InitialCreate.cs" />
+    <Compile Include="Migrations\201912171633003_InitialCreate.designer.cs">
+      <DependentUpon>201912171633003_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201912191843332_AddBasket.cs" />
+    <Compile Include="Migrations\201912191843332_AddBasket.designer.cs">
+      <DependentUpon>201912191843332_AddBasket.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SQLRepository.cs" />
   </ItemGroup>
@@ -64,6 +73,14 @@
       <Project>{C32BF0FF-BF4E-419D-9C26-B5BD32A9308E}</Project>
       <Name>MyShop.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201912171633003_InitialCreate.resx">
+      <DependentUpon>201912171633003_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912191843332_AddBasket.resx">
+      <DependentUpon>201912191843332_AddBasket.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

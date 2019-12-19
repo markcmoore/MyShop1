@@ -18,9 +18,10 @@ namespace MyShop.WebUI.Models
     public class SendCodeViewModel
     {
         public string SelectedProvider { get; set; }
-        public ICollection<System.Web.Mvc.SelectListItem> Providers { get; set; }
         public string ReturnUrl { get; set; }
-        public bool RememberMe { get; set; }
+        public bool   RememberMe { get; set; }
+        
+        public ICollection<System.Web.Mvc.SelectListItem> Providers { get; set; }
     }
 
     public class VerifyCodeViewModel
@@ -30,7 +31,7 @@ namespace MyShop.WebUI.Models
 
         [Required]
         [Display(Name = "Code")]
-        public string Code { get; set; }
+        public string Code      { get; set; }
         public string ReturnUrl { get; set; }
 
         [Display(Name = "Remember this browser?")]
