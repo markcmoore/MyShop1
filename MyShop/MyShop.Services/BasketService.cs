@@ -29,7 +29,7 @@ namespace MyShop.Services
 
             Basket basket = new Basket();
 
-            if (cookie!=null)
+            if (cookie != null)
             {
                 string basketId = cookie.Value;
 
@@ -45,11 +45,15 @@ namespace MyShop.Services
                     }
                 }
             }
-            if (createIfNull)
+            else
             {
-                basket = CreateNewBasket(httpContext);
+                if (createIfNull)
+                {
+                    basket = CreateNewBasket(httpContext);
+                }
+
             }
-            
+
             return basket;
         }
 
@@ -71,7 +75,7 @@ namespace MyShop.Services
         //this method is to add to the basket
         public void AddToBasket(HttpContextBase httpContext, string productId)
         {
-            Basket basket = GetBasket(httpContext, true) ;
+            Basket basket = GetBasket(httpContext, true);
             BasketItem item = basket.BasketItems.FirstOrDefault(i => i.ProductId == productId);
 
             if(item == null)
@@ -86,7 +90,7 @@ namespace MyShop.Services
             }
             else
             {
-                item.Quantity++;
+                item.Quantity = item.Quantity + 1;
             }
 
             basketContext.Commit();

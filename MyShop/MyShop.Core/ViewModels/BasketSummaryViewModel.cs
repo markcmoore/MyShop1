@@ -18,6 +18,5 @@ namespace MyShop.Core.ViewModels
             this.BasketCount = basketCount;
             this.BasketTotal = basketTotal;
         }
-
     }
 }
