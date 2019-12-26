@@ -20,11 +20,14 @@ namespace MyShop.WebUI.Tests.Controllers
             //SETUP
             IRepository<Basket> baskets = new MockContext<Basket>();
             IRepository<Product> products = new MockContext<Product>();
+            IRepository<Order> orders = new MockContext<Order>();
 
             var httpContext = new MockHttpContext();
 
             IBasketService basketService = new BasketService(products, baskets);
-            var controller = new BasketController(basketService);
+            IOrderService orderService = new OrderService(orders);
+
+            var controller = new BasketController(basketService, orderService);
             controller.ControllerContext = new System.Web.Mvc.ControllerContext(httpContext, new System.Web.Routing.RouteData(), controller);
 
             //ACT
@@ -42,8 +45,9 @@ namespace MyShop.WebUI.Tests.Controllers
         public void CanGetSummaryViewModel()
         {
             //SETUP
-            IRepository<Basket> baskets = new MockContext<Basket>();
+            IRepository<Basket>  baskets  = new MockContext<Basket>();
             IRepository<Product> products = new MockContext<Product>();
+            IRepository<Order>   orders   = new MockContext<Order>();
 
             //create some products
             products.Insert(new Product() { Id = "1", Price = 10.01m });
@@ -61,8 +65,9 @@ namespace MyShop.WebUI.Tests.Controllers
 
             //create the basketService (interface) context to put the baskets into.
             IBasketService basketService = new BasketService(products, baskets);
+            IOrderService orderService = new OrderService(orders);
 
-            var controller = new BasketController(basketService);
+            var controller = new BasketController(basketService, orderService);
             var httpContext = new MockHttpContext();
 
             httpContext.Request.Cookies.Add(new System.Web.HttpCookie("eCommerceBasket") { Value = basket.Id });
@@ -73,7 +78,52 @@ namespace MyShop.WebUI.Tests.Controllers
 
             Assert.AreEqual(7, basketSummary.BasketCount);
             Assert.AreEqual(75.57m, basketSummary.BasketTotal);
+        }
 
+        [TestMethod]
+        public void CanCheckoutAndCreateOrder()
+        {
+            //SETUP
+            IRepository<Basket> baskets = new MockContext<Basket>();
+            IRepository<Product> products = new MockContext<Product>();
+            IRepository<Order> orders = new MockContext<Order>();
+
+            //create some products
+            products.Insert(new Product() { Id = "1", Price = 10.01m });
+            products.Insert(new Product() { Id = "2", Price = 11.11m });
+
+            //create a basket to put the products in
+            Basket basket = new Basket();
+
+            //put the products and their quantities in the basket
+            basket.BasketItems.Add(new BasketItem() { ProductId = "1", Quantity = 2 });
+            basket.BasketItems.Add(new BasketItem() { ProductId = "2", Quantity = 5 });
+
+            //put the basket into the List<Basket>
+            baskets.Insert(basket);
+
+            //create the basketService (interface) context to put the baskets into.
+            IBasketService basketService = new BasketService(products, baskets);
+            IOrderService orderService = new OrderService(orders);
+
+            var controller = new BasketController(basketService, orderService);
+            var httpContext = new MockHttpContext();
+
+            httpContext.Request.Cookies.Add(new System.Web.HttpCookie("eCommerceBasket") { Value = basket.Id });
+            controller.ControllerContext = new System.Web.Mvc.ControllerContext(httpContext, new System.Web.Routing.RouteData(), controller);
+
+            //ACT
+            Order order = new Order(); //create an order object
+            // pass in the empty order to the controller. The controller already has the 'httpContext'
+            //Checkout() will plave the order, process payment, and empty the basket
+            controller.Checkout(order);
+
+            //ASSERT
+            Assert.AreEqual(2, order.OrderItems.Count());//2 items... quantity will be 7
+            Assert.AreEqual(0, basket.BasketItems.Count());//basket should now be empty
+
+            Order orderInRep = orders.Find(order.Id);
+            Assert.AreEqual(2, orderInRep.OrderItems.Count());
         }
     }
 }

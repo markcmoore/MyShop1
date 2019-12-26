@@ -143,7 +143,7 @@ namespace MyShop.Services
                                         join p in productContext.Collection()
                                         on item.ProductId equals p.Id
                                         select item.Quantity * p.Price).Sum();
-
+                
                 model.BasketCount = basketCount ?? 0;
                 model.BasketTotal = basketTotal ?? decimal.Zero;
 
@@ -153,6 +153,13 @@ namespace MyShop.Services
             {
                 return model;
             }
+        }
+
+        public void ClearBasket(HttpContextBase httpContext)
+        {
+            Basket basket = GetBasket(httpContext, false);
+            basket.BasketItems.Clear();
+            basketContext.Commit();
         }
     }
 }
