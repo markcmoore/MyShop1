@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MyShop.Core.Contracts;
+using MyShop.Core.models;
+using MyShop.Core.ViewModels;
 using MyShop.WebUI;
 using MyShop.WebUI.Controllers;
 
@@ -13,16 +16,24 @@ namespace MyShop.WebUI.Tests.Controllers
     public class HomeControllerTest
     {
         [TestMethod]
-        public void Index()
+        public void IndexPageDoesReturnProducts()
         {
-            //// Arrange
-            //HomeController controller = new HomeController();
+            //DI the MOCK repositories
+            IRepository<Product> productContext = new Mocks.MockContext<Product>();
+            IRepository<ProductCategory> productCategoryContext = new Mocks.MockContext<ProductCategory>();
 
-            //// Act
-            //ViewResult result = controller.Index() as ViewResult;
+            //insert a product jsut so the number of produsts is 1
+            productContext.Insert(new Product());
+            HomeController controller = new HomeController(productContext, productCategoryContext);//this is the constructor
 
-            //// Assert
-            //Assert.IsNotNull(result);
+            //Index returns something... we will make is a 'ViewResult'
+            var result = controller.Index() as ViewResult;
+
+            //typeDef that results' viewdata.model as the correct model.
+            var viewModel = (ProductListViewModel)result.ViewData.Model;
+
+            //check if the correct number of products are present.
+            Assert.AreEqual(1, viewModel.Products.Count());
         }
     }
 }
